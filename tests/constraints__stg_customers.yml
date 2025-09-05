@@ -1,0 +1,13 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: "Basic constraints for staging customers"
+    tests:
+      - unique:
+          column_name: customer_id
+      - not_null:
+          column_name: customer_id
+      - accepted_values:
+          column_name: country_code
+          values: ['AU','US','GB']

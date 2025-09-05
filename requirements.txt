@@ -1,0 +1,20 @@
+duckdb>=1.0.0
+pyarrow>=16.1.0
+polars>=1.5.0
+numpy>=1.26.0
+faker>=24.0.0
+mimesis>=15.1.0
+rstr>=3.2.2
+deltalake>=0.17.0
+python-dotenv>=1.0.1
+dbt-core>=1.7.0
+dbt-duckdb>=1.7.0
+pandas>=2.2.0
+openpyxl>=3.1.2
+xlsxwriter>=3.2.0
+tqdm>=4.66.0
+
+# Optional: For DLT pipeline approach
+dlt[duckdb]>=0.4.0
+dlt[filesystem]>=0.4.0
+dlt[parquet]>=0.4.0

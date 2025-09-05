@@ -1,0 +1,24 @@
+name: 'local_de_assessment'
+version: '1.0.0'
+config-version: 2
+
+profile: 'local_duckdb'
+
+model-paths: ['models']
+snapshot-paths: ['snapshots']
+test-paths: ['tests']
+analysis-paths: ['analysis']
+macro-paths: ['macros']
+seed-paths: ['seeds']
+target-path: 'target'
+clean-targets: ['target']
+
+models:
+  local_de_assessment:
+    +materialized: view
+    staging:
+      +schema: stg
+    silver:
+      +schema: silver
+    gold:
+      +schema: gold
