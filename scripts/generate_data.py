@@ -64,7 +64,7 @@ def generate_customers(out, scale, seed):
             is_vip = str(random.random() < 0.15)
             gdpr_consent = str(random.random() > 0.05)
             f.write(f"{i},{nk},{person.first_name()},{person.last_name()},{email},{phone},{addr1},{addr2},{city},{state},{postcode},{country_code},{lat:.6f},{lon:.6f},{birth.isoformat()},{join_ts.isoformat()},{is_vip},{gdpr_consent}\n")
-    print("customers.csv has been generated.")
+    print(f"customers.csv file has been generated with {total_rows} rows.")
 
 # Generate Products.csv
 def generate_products(out, scale, seed):
@@ -85,7 +85,7 @@ def generate_products(out, scale, seed):
             introduced = date(2015,1,1) + timedelta(days=random.randint(0, 3000))
             discontinued_dt = date(2023,1,1) + timedelta(days=random.randint(0, 365)) if discontinued and random.random() > 0.1 else ''
             f.write(f"{i},{sku},{cat} {subcat} Item,{cat},{subcat},{price:.4f},AUD,{str(discontinued)},{introduced},{discontinued_dt}\n")
-    print("products.csv has been generated.")
+    print(f"products.csv file has been generated with {total_rows} rows.")
 
 # Generate stores.csv
 def generate_stores(out, scale, seed):
@@ -106,31 +106,30 @@ def generate_stores(out, scale, seed):
             if random.random() < 0.005:
                 lat = 999.0
                 lon = 999.0
-            open_dt = date(2010,1,1) + timedelta(days=random.randint(0, 5000))
-            close_dt = date(2023,1,1) + timedelta(days=random.randint(0, 365)) if random.random() < 0.1 else ''
+            open_dt = date(2010,1,1) + timedelta(days = random.randint(0, 5000))
+            close_dt = date(2023,1,1) + timedelta(days = random.randint(0, 365)) if random.random() < 0.1 else ''
             f.write(f"{i},{code},Store {i},{random.choice(channels)},{random.choice(regions)},{random.choice(regions)},{lat:.6f},{lon:.6f},{open_dt},{close_dt}\n")
-    print("stores.csv has been generated.")
+    print(f"stores.csv file has been generated with {total_rows} rows.")
 
 # Generate Suppliers.csv
 def generate_suppliers(out, scale, seed):
-
+    total_rows = int(8000 * scale)
     # Initialize Faker
     fake = Faker('en_AU')
-
     # Output path
     path = out / 'suppliers.csv'
 
     # Write header and generate supplier data
     with path.open('w', encoding='utf-8') as f:
         f.write('supplier_id,supplier_code,name,country_code,lead_time_days,preferred\n')
-        for i in range(1, 8001):
+        for i in range(1, total_rows + 1):
             supplier_code = 'SUP-' + ''.join(random.choices('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=8))
             name = fake.company().replace(',', '')
             country_code = fake.country_code()
             lead_time_days = random.randint(1, 60)
             preferred = str(random.random() < 0.2)
             f.write(f"{i},{supplier_code},{name},{country_code},{lead_time_days},{preferred}\n")
-    print("suppliers.csv file has been generated.")
+    print(f"suppliers.csv file has been generated with {total_rows} rows.")
 
 # Generate Orders.csv, Partitioned
 def generate_orders(out, scale, seed):
@@ -157,7 +156,7 @@ def generate_orders(out, scale, seed):
                 coupon = 'SAVE10' if random.random() < 0.1 else ''
                 fee = round(random.uniform(0, 20), 2)
                 f.write(f"{oid},{order_ts.isoformat()},{dt},{customer_id},{store_id},{channel},{payment},{coupon},{fee:.2f},AUD\n")
-    print("orders.csv file has been generated.")
+    print(f"orders.csv file has been generated with {total_rows} rows.")
 
 # Generate Orders_Lines.csv, Partitioned
 def generate_order_lines(out, scale, seed):
@@ -396,16 +395,16 @@ def main():
     out = pathlib.Path(args.out)
     ensure_dir(out)
 
-    generate_exchange_rates(out, args.scale, args.seed)
-    generate_customers(out, args.scale, args.seed)
-    generate_products(out, args.scale, args.seed)
-    generate_stores(out, args.scale, args.seed)
-    generate_suppliers(out, args.scale, args.seed)
-    generate_orders(out, args.scale, args.seed)
-    generate_order_lines(out, args.scale, args.seed)
-    generate_sensors(out, args.scale)
+    # generate_exchange_rates(out, args.scale, args.seed)
+    # generate_customers(out, args.scale, args.seed)
+    # generate_products(out, args.scale, args.seed)
+    # generate_stores(out, args.scale, args.seed)
+    # generate_suppliers(out, args.scale, args.seed)
+    # generate_orders(out, args.scale, args.seed)
+    # generate_order_lines(out, args.scale, args.seed)
+    # generate_sensors(out, args.scale)
 
-    generate_returns(out, args.scale, args.seed)
+    # generate_returns(out, args.scale, args.seed)
     generate_events(out, args.scale)
     generate_shipments(out, args.scale, args.seed)
 

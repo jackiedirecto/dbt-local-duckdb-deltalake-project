@@ -447,6 +447,53 @@ def load_shipments(raw_root, lake_root, conn, dry_run=False):
         print('error loading shipments into deltalake.')
         mark_processed(conn, src, 0, len(tbl), 'failed')
 
+# Load events.jsonl to deltalake
+def load_events(raw_root, lake_root, conn, dry_run=False):
+    events_root = raw_root / 'events'
+
+    if not events_root.exists() or not events_root.is_dir():
+        print(f"'events' folder not found in {raw_root}")
+        return
+
+    pq_base = lake_root / 'bronze' / 'parquet' / 'events'
+    dl_base = lake_root / 'bronze' / 'delta' / 'events'
+
+    for subfolder in events_root.iterdir():
+        if not subfolder.is_dir():
+            continue
+
+        folder_name = subfolder.name
+        if not is_valid_partition_folder(folder_name):
+            print(f"Skipping folder '{folder_name}': invalid partition folder format.")
+            continue
+
+        event_dt = folder_name.split('=')[-1]
+
+        for jsonl_file in subfolder.glob('*.jsonl'):
+            if already_processed(conn, jsonl_file):
+                continue
+
+            tbl = None
+            try:
+                with jsonl_file.open('r', encoding='utf-8') as f:
+                    json_lines = [line.strip() for line in f if line.strip()]
+                    tbl = pa.table({'json': json_lines}, schema=events_schema)
+
+                tbl = add_audit_columns(tbl, jsonl_file)
+
+                # Add partition column
+                tbl = tbl.append_column("event_dt", pa.array([event_dt] * len(tbl)))
+
+                if not dry_run:
+                    write_parquet_partitioned(tbl, pq_base, ["event_dt"])
+                    write_delta(tbl, dl_base, mode='append', partition_by=["event_dt"], merge_schema=True)
+
+                mark_processed(conn, jsonl_file, len(tbl), 0, 'success')
+                print(f"{jsonl_file.name} has been loaded to deltalake.")
+
+            except Exception as e:
+                handle_rejects(tbl, str(e), lake_root, jsonl_file)
+                mark_processed(conn, jsonl_file, 0, len(tbl) if tbl else 0, 'failed')
 
 def main():
     args = parse_args()
