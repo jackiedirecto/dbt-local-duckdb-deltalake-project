@@ -28,3 +28,24 @@ select * from read_parquet('{{ lake_root }}/parquet/suppliers/*.parquet');
 
 create or replace view bronze_suppliers_delta as
 select * from delta_scan('{{ lake_root }}/delta/suppliers');
+
+-- For exchange_rates
+create or replace view bronze_exchange_rates_parquet as
+select * from read_parquet('{{ lake_root }}/parquet/exchange_rates/*.parquet');
+
+create or replace view bronze_exchange_rates_delta as
+select * from delta_scan('{{ lake_root }}/delta/exchange_rates');
+
+-- For orders
+create or replace view bronze_orders_parquet as
+select * from read_parquet('{{ lake_root }}/parquet/orders/order_dt=*/*.parquet');
+
+create or replace view bronze_orders_delta as
+select * from delta_scan('{{ lake_root }}/delta/orders/order_dt=*');
+
+-- For orders_lines
+create or replace view bronze_orders_lines_parquet as
+select * from read_parquet('{{ lake_root }}/parquet/orders_lines/order_dt=*/*.parquet');
+
+create or replace view bronze_orders_lines_delta as
+select * from delta_scan('{{ lake_root }}/delta/orders_lines/order_dt=*');
