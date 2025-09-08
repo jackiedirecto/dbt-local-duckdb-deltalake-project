@@ -1,5 +1,11 @@
 # Add to your .gitignore
 
+# Exclude .venv
+.venv/*
+
+# Exclude schemas pyc files
+schemas/__pycache__/*
+
 # Exclude large datasets but keep samples
 data_raw/*
 !data_raw/README.md

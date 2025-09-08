@@ -49,3 +49,24 @@ select * from read_parquet('{{ lake_root }}/parquet/orders_lines/order_dt=*/*.pa
 
 create or replace view bronze_orders_lines_delta as
 select * from delta_scan('{{ lake_root }}/delta/orders_lines/order_dt=*');
+
+-- For events
+create or replace view bronze_events_parquet as
+select * from read_parquet('{{ lake_root }}/parquet/events/event_dt=*/*.parquet');
+
+create or replace view bronze_events_delta as
+select * from delta_scan('{{ lake_root }}/delta/events/event_dt=*');
+
+-- For returns
+create or replace view bronze_returns_parquet as
+select * from read_parquet('{{ lake_root }}/parquet/returns/*.parquet');
+
+create or replace view bronze_returns_delta as
+select * from delta_scan('{{ lake_root }}/delta/returns');
+
+-- For shipments
+create or replace view bronze_shipments_parquet as
+select * from read_parquet('{{ lake_root }}/parquet/shipments/*.parquet');
+
+create or replace view bronze_shipments_delta as
+select * from delta_scan('{{ lake_root }}/delta/shipments');
